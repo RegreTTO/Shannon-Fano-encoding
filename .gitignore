@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/c++,cmake,vs
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++,cmake,vs
-
+build
+.vscode
 ### C++ ###
 # Prerequisites
 *.d

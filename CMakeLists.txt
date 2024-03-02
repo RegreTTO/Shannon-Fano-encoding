@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.5>=)
+project(Shennon-Fano-encoding CXX)
+set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_BUILD_TYPE Debug)
+add_subdirectory(src)
+add_executable(${PROJECT_NAME} main.cpp)
+target_link_libraries(${PROJECT_NAME} PUBLIC algo)
