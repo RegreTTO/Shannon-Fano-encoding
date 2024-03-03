@@ -1,9 +1,10 @@
 ## Build
+```bash
 mkdir build
 cd build
 cmake ..
 ninja
-
+```
 # Run
 ## Help menu
 
