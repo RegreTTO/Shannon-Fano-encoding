@@ -1,5 +1,4 @@
 #include "algo.h"
-#include "tree.h"
 #include <algorithm>
 #include <cstring>
 #include <functional>
@@ -8,6 +7,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include "tree.h"
 using namespace std;
 namespace algo {
 
@@ -64,7 +64,7 @@ map<char, string> dfs(Node* root, string bin = "") {
     return mp;
 }
 
-string encode(const char* msg) {
+string encode(const char* msg, FILE* out) {
     unordered_set<char> uniques;
     unordered_map<char, int> counter;
     size_t n = strlen(msg);
@@ -85,11 +85,11 @@ string encode(const char* msg) {
     ShennonTree tree(build_tree(p, 0, p.size()));
     auto mp = dfs(tree.root);
     for (auto i : mp) {
-        cout << i.first << " -- " << i.second << endl;
+        fprintf(out, "%c -- %s\n", i.first, i.second.c_str());
     }
     return "CRY!";
 }
-string decode(const char* code) {
+string decode(const char* code, FILE* out) {
     return "ASSASDASDAS";
 }
 }  // namespace algo
