@@ -12,7 +12,7 @@
 using namespace std;
 namespace algo {
 
-#define FORMAT "'%c' -- %s\n"
+const string FORMAT = "'%c' -- %s\n";
 
 vector<double> pref_sum;
 
@@ -93,7 +93,7 @@ void encode(FILE* in, FILE* out, FILE* table) {
     if (fileno(out) == fileno(table))
         fprintf(table, "CORRESPONDENCE TABLE\n");
     for (auto i : mp) {
-        fprintf(table, FORMAT, i.first, i.second.c_str());
+        fprintf(table, FORMAT.c_str(), i.first, i.second.c_str());
     }
     for (int i = 0; i < n; i++) {
         fprintf(out, "%s", mp[msg[i]].c_str());
@@ -101,14 +101,19 @@ void encode(FILE* in, FILE* out, FILE* table) {
     return;
 }
 void decode(FILE* in, FILE* out, FILE* table) {
-    if (table == stdout) {
-        table = stdin;
+    if (fileno(table) == fileno(stdout) || fileno(table) == fileno(stdin) ||
+        fileno(table) == fileno(stderr)) {
+        std::cerr << "[!] You must specify table file when using decode!";
+        exit(2);
     }
     char ch;
     char* code;
     unordered_map<string, char> cons_table;
-    while (fscanf(table, FORMAT, &ch, code) != EOF) {
+    while (fscanf(table, FORMAT.c_str(), &ch, code) > 1) {
         cons_table[code] = ch;
+    }
+    if (cons_table.empty()) {
+        std::cerr << "[!] Invalid table! Format: \"" + FORMAT + '\"';
     }
     const char* binary = file::read_file(in);
     size_t n = strlen(binary);
