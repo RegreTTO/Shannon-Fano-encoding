@@ -4,6 +4,6 @@
 #include <string>
 
 namespace algo {
-std::string encode(const char* msg, FILE* out);
-std::string decode(const char* code, FILE* out);
+void encode(FILE* in, FILE* out, FILE* table);
+void decode(FILE* in, FILE* out, FILE* table);
 }  // namespace algo

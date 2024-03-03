@@ -7,9 +7,12 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include "file.h"
 #include "tree.h"
 using namespace std;
 namespace algo {
+
+#define FORMAT "'%c' -- %s\n"
 
 vector<double> pref_sum;
 
@@ -64,11 +67,14 @@ map<char, string> dfs(Node* root, string bin = "") {
     return mp;
 }
 
-string encode(const char* msg, FILE* out) {
+void encode(FILE* in, FILE* out, FILE* table) {
     unordered_set<char> uniques;
     unordered_map<char, int> counter;
+    const char* msg = file::read_file(in);
     size_t n = strlen(msg);
     for (int i = 0; i < n; i++) {
+        if (!isprint(msg[i]))
+            continue;
         counter[msg[i]]++;
         uniques.emplace(msg[i]);
     }
@@ -84,12 +90,39 @@ string encode(const char* msg, FILE* out) {
     }
     ShennonTree tree(build_tree(p, 0, p.size()));
     auto mp = dfs(tree.root);
+    if (fileno(out) == fileno(table))
+        fprintf(table, "CORRESPONDENCE TABLE\n");
     for (auto i : mp) {
-        fprintf(out, "%c -- %s\n", i.first, i.second.c_str());
+        fprintf(table, FORMAT, i.first, i.second.c_str());
     }
-    return "CRY!";
+    for (int i = 0; i < n; i++) {
+        fprintf(out, "%s", mp[msg[i]].c_str());
+    }
+    return;
 }
-string decode(const char* code, FILE* out) {
-    return "ASSASDASDAS";
+void decode(FILE* in, FILE* out, FILE* table) {
+    if (table == stdout) {
+        table = stdin;
+    }
+    char ch;
+    char* code;
+    unordered_map<string, char> cons_table;
+    while (fscanf(table, FORMAT, &ch, code) != EOF) {
+        cons_table[code] = ch;
+    }
+    const char* binary = file::read_file(in);
+    size_t n = strlen(binary);
+    string msg = "";
+    string prefix = "";
+    for (int i = 0; i < n; i++) {
+        prefix += binary[i];
+        if (cons_table.contains(prefix)) {
+            msg += cons_table[prefix];
+            prefix = "";
+        }
+    }
+    fprintf(out, "%s", msg.c_str());
+
+    return;
 }
 }  // namespace algo
